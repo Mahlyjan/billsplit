@@ -1,10 +1,9 @@
 import { Box, Button, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import "./Display.css";
 
 type CalculatorValues = {
-	// baseAmount: number;
 	baseAmount: string;
 	serviceCharge: number;
 	govTax: number;
@@ -20,32 +19,35 @@ const Display = () => {
 	}
 	); // Renders an object. This is a react hook.
 
-	const { register, watch, handleSubmit } = form;
-	const watchAllFields = watch(); // watching everything when nothing is passed as argument.
+	const { register, handleSubmit, getValues } = form;
+	// const watchAllFields = watch(); // watching everything when nothing is passed as argument.
 	const [buttonClicked, setButtonClicked] = useState(false);
+	const [values, setValues] = useState<CalculatorValues>({
+		baseAmount: "0",
+		serviceCharge: 0,
+		govTax: 0
+	});
 	const onCalculate = (data: CalculatorValues) => {
-		console.log("Calculate button clicked!", data);
+		const callingValues = getValues();
+		setValues(callingValues);
 		setButtonClicked(true);
-		if (data?.baseAmount) { //if true
-			console.log(typeof eval(watchAllFields?.baseAmount));
-		}
-
-		//let x = eval("7.90 + 4.90/2")
-		Number(watchAllFields?.baseAmount);
-		console.log(eval(watchAllFields?.baseAmount));
 	}
 
+	// TODO: Leaving unwanted code when we use react Hook Form "watch" function
+	// const totalCostWithSvc: number = eval(watchAllFields?.baseAmount) + (eval(watchAllFields?.baseAmount) * (watchAllFields?.serviceCharge/100));
+	// console.log("totalCostWithSvc =", totalCostWithSvc);
+	// const totalCostAfterGst: number = Number(totalCostWithSvc + (totalCostWithSvc * (watchAllFields?.govTax/100)));
+	// const amountOwed = Number(totalCostAfterGst).toFixed(2);
 
-	const totalCostWithSvc: number = eval(watchAllFields?.baseAmount) + (eval(watchAllFields?.baseAmount) * (watchAllFields?.serviceCharge/100));
-	console.log("totalCostWithSvc =", totalCostWithSvc);
-	const totalCostAfterGst: number = Number(totalCostWithSvc + (totalCostWithSvc * (watchAllFields?.govTax/100)));
+	const totalCostWithSvc: number = eval(values?.baseAmount) + (eval(values?.baseAmount) * (values?.serviceCharge/100));
+	const totalCostAfterGst: number = Number(totalCostWithSvc + (totalCostWithSvc * (values?.govTax/100)));
 	const amountOwed = Number(totalCostAfterGst).toFixed(2);
+
+	useEffect(() => {
+		console.log("Check values: ", values);
+
+	}, [values])
 	
-	// Callback Function!
-	// React.useEffect(() => {
-  //   const subscription = watch((value, { name, type }) => console.log(value, name, type));
-  //   return () => subscription.unsubscribe();
-  // }, [watch]);
 
 	return (
 		<>
@@ -97,9 +99,9 @@ const Display = () => {
 				<Box className="result-container">
 					<h2 color="red"><b>You owe: ${amountOwed}</b></h2>
 					<Box className="display-fields">
-					<p>Base Amount: ${Number(eval(watchAllFields?.baseAmount)).toFixed(2)}</p>
-					<p>Service Charge: {watchAllFields?.serviceCharge}%</p>
-					<p>GST: {watchAllFields?.govTax}%</p>
+					<p>Base Amount: ${Number(eval(values?.baseAmount)).toFixed(2)}</p>
+					<p>Service Charge: {values?.serviceCharge}%</p>
+					<p>GST: {values?.govTax}%</p>
 					</Box>
 				</Box> : <></>}
 			</Box>
