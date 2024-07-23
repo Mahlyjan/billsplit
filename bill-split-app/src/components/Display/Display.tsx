@@ -1,3 +1,4 @@
+import { ErrorMessage } from "@hookform/error-message";
 import { Box, Button, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -11,43 +12,47 @@ type CalculatorValues = {
 const Display = () => {
 	const form = useForm<CalculatorValues>(
 		{
-		defaultValues: {
-			baseAmount: "0",
-			serviceCharge: 0,
-			govTax: 0
+			defaultValues: {
+				baseAmount: "0",
+				serviceCharge: 0,
+				govTax: 0
+			}
 		}
-	}
 	); // Renders an object. This is a react hook.
 
-	const { register, handleSubmit, getValues } = form;
-	// const watchAllFields = watch(); // watching everything when nothing is passed as argument.
-	const [buttonClicked, setButtonClicked] = useState(false);
+	const { register, handleSubmit, getValues, formState: { errors } } = form;
+	const [submitClicked, setSubmitClicked] = useState(false);
+	const [resetClicked, setResetClicked] = useState(false);
 	const [values, setValues] = useState<CalculatorValues>({
 		baseAmount: "0",
 		serviceCharge: 0,
 		govTax: 0
 	});
+
 	const onCalculate = (data: CalculatorValues) => {
 		const callingValues = getValues();
 		setValues(callingValues);
-		setButtonClicked(true);
+		setSubmitClicked(true);
+		setResetClicked(false)
 	}
 
-	// TODO: Leaving unwanted code when we use react Hook Form "watch" function
-	// const totalCostWithSvc: number = eval(watchAllFields?.baseAmount) + (eval(watchAllFields?.baseAmount) * (watchAllFields?.serviceCharge/100));
-	// console.log("totalCostWithSvc =", totalCostWithSvc);
-	// const totalCostAfterGst: number = Number(totalCostWithSvc + (totalCostWithSvc * (watchAllFields?.govTax/100)));
-	// const amountOwed = Number(totalCostAfterGst).toFixed(2);
-
-	const totalCostWithSvc: number = eval(values?.baseAmount) + (eval(values?.baseAmount) * (values?.serviceCharge/100));
-	const totalCostAfterGst: number = Number(totalCostWithSvc + (totalCostWithSvc * (values?.govTax/100)));
+	const totalCostWithSvc: number = eval(values?.baseAmount) + (eval(values?.baseAmount) * (values?.serviceCharge / 100));
+	const totalCostAfterGst: number = Number(totalCostWithSvc + (totalCostWithSvc * (values?.govTax / 100)));
 	const amountOwed = Number(totalCostAfterGst).toFixed(2);
+
+	const handleResetButton = () => {
+		setResetClicked(true);
+		setSubmitClicked(false);
+	}
+
 
 	useEffect(() => {
 		console.log("Check values: ", values);
+		console.log("Submit button clicked:", submitClicked);
+		console.log("Reset button clicked:", resetClicked);
 
-	}, [values])
-	
+	}, [values, submitClicked, resetClicked]);
+
 
 	return (
 		<>
@@ -59,51 +64,90 @@ const Display = () => {
 							<p><b>How much do you owe?</b></p>
 							<p>(Your input may be in the form of an equation)</p>
 						</Box>
-						<Box className="inputs">
+						<Box className="inputs-container">
 							<TextField
 								id="outlined-basic"
 								variant="outlined"
 								label="Amount Owed"
-								{...register("baseAmount")} />
+								{...register("baseAmount", {
+									pattern: {
+										// value: /^([-+/*]\d+(\.\d+)?)*/g,
+										value: /^[0-9+\-*/.^()]*$/g,
+										message: "The above input only accepts numerics or a mathematical equation."
+									}
+								})} />
+						</Box>
+						<ErrorMessage errors={errors} name="baseAmount" render={({ message }) => <div className="errorMessage"><p>{message}</p></div>} />
+					</Box>
+					<Box className="body">
+						<Box className="questions">
+							<p><b>Any service charge?</b></p>
+						</Box>
+						<Box className="inputs-container">
+							<Box className="inner-inputs-container">
+								<TextField
+									id="outlined-basic"
+									variant="outlined"
+									label="Service Charge"
+									{...register("serviceCharge", 
+									{
+										pattern: {
+											value: /^[0-9]*$/g,
+											message: "This input accepts number only."
+										}
+									}
+									)} />
+								<h2><b>%</b></h2>
+							</Box>
+
+							<ErrorMessage errors={errors} name="serviceCharge" render={({ message }) => <div className="errorMessage"><p>{message}</p></div>} />
 						</Box>
 					</Box>
 					<Box className="body">
 						<Box className="questions">
-							<p><b>Any service charge? (In percentage)</b></p>
+							<p><b>Any Government Service Tax (GST)?</b></p>
 						</Box>
-						<Box className="inputs">
-							<TextField
-								id="outlined-basic"
-								variant="outlined"
-								label="Service Charge"
-								{...register("serviceCharge")} /><b>%</b>
-						</Box>
-					</Box>
-					<Box className="body">
-						<Box className="questions">
-							<p><b>Any Government Service Tax (GST)? (In percentage)</b></p>
-						</Box>
-						<Box className="inputs">
+						<Box className="inputs-container">
+							<Box className="inner-inputs-container">
 							<TextField
 								id="outlined-basic"
 								variant="outlined"
 								label="GST"
-								{...register("govTax")} /><b>%</b>
+								{...register("govTax", 
+								{
+									pattern: {
+										value: /^[0-9]*$/g,
+										message: "This input accepts number only."
+									}
+								}
+								)} />
+							<h2><b>%</b></h2>
+							</Box>
+							<ErrorMessage errors={errors} name="govTax" render={({ message }) => <div className="errorMessage"><p>{message}</p></div>} />
+
 						</Box>
+					</Box>
+					<Box className="buttons-container">
+
 					</Box>
 					<Box className="button">
 						<Button variant="contained" type="submit">Calculate!</Button>
 					</Box>
-				</form>
-				{buttonClicked ?
-				<Box className="result-container">
-					<h2 color="red"><b>You owe: ${amountOwed}</b></h2>
-					<Box className="display-fields">
-					<p>Base Amount: ${Number(eval(values?.baseAmount)).toFixed(2)}</p>
-					<p>Service Charge: {values?.serviceCharge}%</p>
-					<p>GST: {values?.govTax}%</p>
+					<Box className="button">
+						<Button variant="contained" color="secondary" type="reset" onClick={handleResetButton}>Reset</Button>
 					</Box>
-				</Box> : <></>}
+				</form>
+				{submitClicked ?
+					<Box className="result-container">
+						<h2 color="red"><b>You owe: ${amountOwed}</b></h2>
+						<Box className="display-fields">
+							<p>Base Amount: ${Number(eval(values?.baseAmount)).toFixed(2)}</p>
+							<p>Service Charge: {values?.serviceCharge}%</p>
+							<p>GST: {values?.govTax}%</p>
+						</Box>
+					</Box> : 
+				resetClicked ? <></> : <></>}
+
 			</Box>
 
 		</>

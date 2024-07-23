@@ -37,3 +37,17 @@
     flex-direction: column;
     line-height: 2px;
 }
+
+.inputs-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.inner-inputs-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.errorMessage {
+    color: red;
+}
