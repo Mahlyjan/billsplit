@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/billsplit/static/css/main.1a07c5e7.css",
+    "main.js": "/billsplit/static/js/main.b1c64c82.js",
+    "static/js/453.f668d619.chunk.js": "/billsplit/static/js/453.f668d619.chunk.js",
+    "index.html": "/billsplit/index.html",
+    "main.1a07c5e7.css.map": "/billsplit/static/css/main.1a07c5e7.css.map",
+    "main.b1c64c82.js.map": "/billsplit/static/js/main.b1c64c82.js.map",
+    "453.f668d619.chunk.js.map": "/billsplit/static/js/453.f668d619.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1a07c5e7.css",
+    "static/js/main.b1c64c82.js"
+  ]
+}
