@@ -59,7 +59,13 @@ const Display = () => {
 			<Box className="main">
 				<form onSubmit={handleSubmit(onCalculate)}>
 					<Box className="body">
-						<h1>Bill Split Calculator</h1>
+						<h1 className="title">Calculate-What-I-Owe</h1>
+						<Box className="preface">
+							<p>Tired of paying more than what you ordered when you dine in big groups?</p>
+							<p>Say no more.</p>
+							<p>With this tool, each individual can calculate and pay the exact amount they owe!</p>
+							<p>Less stress, more savings, more fair.</p>
+						</Box>
 						<Box className="questions">
 							<p><b>How much do you owe?</b></p>
 							<p>(Your input may be in the form of an equation)</p>
@@ -131,7 +137,7 @@ const Display = () => {
 
 					</Box>
 					<Box className="button">
-						<Button variant="contained" type="submit">Calculate!</Button>
+						<Button variant="contained" type="submit">Calculate</Button>
 					</Box>
 					<Box className="button">
 						<Button variant="contained" color="secondary" type="reset" onClick={handleResetButton}>Reset</Button>

@@ -2,8 +2,24 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 50px;
+    padding: 50px 20px 50px 20px;
     flex-direction: column;
+}
+
+.title {
+    display: flex;
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+.preface {
+    /* display: flex; */
+    justify-content: center;
+    flex-direction: column;
+    font-style: italic;
+    font-size: smaller;
+    gap: 0px;
+    color: rgb(7, 27, 27);
+    font-weight: 600;
 }
 
 .body {
