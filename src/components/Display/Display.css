@@ -67,3 +67,7 @@
 .errorMessage {
     color: red;
 }
+
+.amount-owe-title {
+    color: green;
+}

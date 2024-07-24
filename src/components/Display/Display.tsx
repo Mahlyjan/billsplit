@@ -79,7 +79,7 @@ const Display = () => {
 									pattern: {
 										// value: /^([-+/*]\d+(\.\d+)?)*/g,
 										value: /^[0-9+\-*/.^()]*$/g,
-										message: "The above input only accepts numerics or a mathematical equation."
+										message: "The above input only accepts numerics or a mathematical equation.\n\n Please also ensure there are no whitespaces in your equation."
 									}
 								})} />
 						</Box>
@@ -145,9 +145,9 @@ const Display = () => {
 				</form>
 				{submitClicked ?
 					<Box className="result-container">
-						<h2 color="red"><b>You owe: ${amountOwed}</b></h2>
+						<h2 className="amount-owe-title"><b>You owe: ${amountOwed}</b></h2>
 						<Box className="display-fields">
-							<p>Base Amount: ${Number(eval(values?.baseAmount)).toFixed(2)}</p>
+							<p>Base amount I owe: ${Number(eval(values?.baseAmount)).toFixed(2)}</p>
 							<p>Service Charge: {values?.serviceCharge}%</p>
 							<p>GST: {values?.govTax}%</p>
 						</Box>
